@@ -107,7 +107,7 @@ P(positive) = Positive / All articles
 P(negative) = Negative / All articles
 ```
 
-Also, the probability of each word appearing is calculated and kept in a object.
+Also, the probability of each word appearing is calculated and kept in a object: `word_probability`.
 ```json
 {
     "positive": {"word-0", probability},...,{"word-n", probability},
@@ -130,7 +130,7 @@ def _named_entities_chunk_NLTK(taggedList):
 `pos_tag(wordList)`: Each word is tagged as a noun, conjunction, determiner and so on.
 `ne_chunk(taggedList)`: Knows if each word is a named entity after being fed by tagged words
 
-Example of the named entity extraction, where `_speech_tag` and `_named_entities_chunk` encapsulate the NLTK functions mentioned before.
+Example of the named entity extraction, where `_speech_tag` and `_named_entities_chunk` encapsulate the NLTK functions mentioned before. 
 ```python
 def entity_extraction(wordList):
     extracted = []
@@ -145,14 +145,35 @@ def entity_extraction(wordList):
                 extracted.append(newItems)
     return extracted
 ```
+The code aims to combine named entities that should be combined. See an usage example below:
+```python
+print(entity_extraction(['Australia', 'fire', 'Smoke', 'turn', 'New', 'Zealand', "'", 'yellow']))
+['Australia', 'New Zealand']
+```
+Here we see how Austalia is considered as a single entity, while New Zealand has been combined into a single entity also, which makes perfect sense.
 
-This is far from perfect
-
-
+However, this is far from perfect. Here we have an exampe where this logic breaks:
+```python
+print(entity_extraction(['Vale', 'Withheld', 'Information', 'From', 'Regulator', 'Before', 'Brazil', 'Dam', 'Disaster', '- WSJ']))
+['Vale', 'Withheld Information', 'Brazil Dam Disaster']
+```
+Here there word Brazil has been combined with `Dam Disaster`, which is not what we want. 
 
 ### Analysis
+The probability of each word in all articles from the testing set is now being multiplied and put into new object. The probability of each word is kept in the object mentioned above called `word_probability`. 
+```python
+P(words|positive) = P(positive) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in") * P("article") * P("related") * P("to") * P("covid-19")
+P(words|negative) = P(negative) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in") * P("article") * P("unrelated") * P("to") * P("covid-19")
+```
+Based on this information, predictive values are calculated - `True Positive (TP)`, `True Negative (TN)`, `False Positive (FP)`, `False Negative (TP)`
+It's done by comparing the probability of all `P(words|positive)` to `P(words|negative)` in the whole test set.
+Then, the accuracy is calculated using the formula
+```
+(TP + TN) / (TP + TN + FP + FN)
+```
+Last, all positive test sets and negative test sets are counted.
 
-
+### Display
 
 
    [Konrad Krawczyk]: <https://scholar.google.co.uk/citations?user=l-ix1z0AAAAJ&hl=en)>

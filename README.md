@@ -49,14 +49,19 @@ An article object is created:
 ```
 
 ### Standardization
-For each article, we take title and description for standardization processing:
-1. Sentence tokenized
-    * "I love this project. I hope you also love it" will become: ["I like this project.", "I hope you also like it"]
-2. Word tokenization
-    * Title will be: ['More', 'Than', '1,000', 'Current', 'and', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', '.']
-3. Lemmatization
+For each article, title and description is concatinated into a single string before standardization processing:
+1. Sentence cleaned with repetitive information from outlets
+    * Some outlets add additional text as postfix of their titles. That text is deleted from the title in the first step. See the list below:
+    ```python
+    text_to_remove = ["- ABC News", "| Al Jazeera", "| US & Canada News", "- BBC Sport", "- BBC Reel", "- BBC News", "| CBC News", "- Washington Times", "| Reuters", "- The New York Times", "| Euronews", "| Daily Mail", "- CBS News"]
+    ```
+2. Sentence tokenized
+    * "I love this project. I hope you also love it" will become: ["I like this project.", "I hope you also like it."]
+3. Word tokenization
+    * Tokenize each word in the text. ["I", "like", "this", "project", ".", "I", "hope", "you", "also", "like", "it", "."]
+4. Lemmatization
     * Better -> Good, Rocks -> Rock
-4. Stopwords removed
+5. Stopwords removed
     * Stopwords are fetched from the NLTK library and then filtered from the array. English is only considered but you can add more language to the language functions if you want to consider more languages. 
     ```python
     def languages():
@@ -64,7 +69,7 @@ For each article, we take title and description for standardization processing:
         "english"
     ]
     ```
-5. Punctuations removed
+6. Punctuations removed
     * .?:!,;‘-’| are removed from the array
 
 NLTK is used for lemmatization (3) and to fetch the stopwords (4). The logic for all other steps (1) (2) (5) is implemented in this project. However, if you set `_useDefault = False`, then NLTK will be used in all steps. This implementation was done to provide the option to compare the final result with- and without NLTK.
@@ -77,11 +82,10 @@ def _sentence_tokenize(text):
         return _sentence_tokenize_NLTK(text)
 ```
 
-Attributes added to the article object:
+Attribute added to the article object:
 ```json
 {
-    "title_standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', '.']",
-    "description_standardized": "['An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called', 'federal', 'agency', 'play', 'central', 'role']"
+    "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', '.', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called', 'federal', 'agency', 'play', 'central', 'role']",
 }
 ```
 Word stemming is not used because it removes the trailing "e" of many words. Therefore, it affects the named entity analysis that is done later on in this project. As an example, the word "Google" becomes "Googl" and "Apple" becomes "Appl".
@@ -89,7 +93,7 @@ Word stemming is not used because it removes the trailing "e" of many words. The
 ### Classification
 
 #### Training- and testing
-Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. Each sets are then split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, ("covid19", "covid-19", "covid"). Articles that contain any of these words are considered as positive, while all the others are considered as negative.
+Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. Each sets are then split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, ("covid19", "covid-19", "covid", "coronavirus"). Articles that contain any of these words are considered as positive, while all the others are considered as negative.
 
 #### Word frequencies
 Next up is to count how many times each word appears in the testing set. An object is created to keep track of that:
@@ -116,8 +120,7 @@ Also, the probability of each word appearing is calculated and kept in a object:
 ```
 
 ### Entity extraction
-All named entities are extracted from each positive article and then counted.
-NLTK is used to accomplish this job. More precisely, `pos_tag` and `ne_chunk`.
+All named entities are extracted from each positive article and then counted. NLTK is used to accomplish this job. More precisely, `pos_tag` and `ne_chunk`.
 
 ```python
 def _speech_tag_NLTK(wordList):
@@ -152,7 +155,7 @@ print(entity_extraction(['Australia', 'fire', 'Smoke', 'turn', 'New', 'Zealand',
 ```
 Here we see how Austalia is considered as a single entity, while New Zealand has been combined into a single entity also, which makes perfect sense.
 
-However, this is far from perfect. Here we have an exampe where this logic breaks:
+However, this is far from perfect. Here is an exampe where this logic breaks:
 ```python
 print(entity_extraction(['Vale', 'Withheld', 'Information', 'From', 'Regulator', 'Before', 'Brazil', 'Dam', 'Disaster', '- WSJ']))
 ['Vale', 'Withheld Information', 'Brazil Dam Disaster']
@@ -166,7 +169,7 @@ P(words|positive) = P(positive) * P("all") * P("tokenized") * P("words") * P("ap
 P(words|negative) = P(negative) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in") * P("article") * P("unrelated") * P("to") * P("covid-19")
 ```
 Based on this information, predictive values are calculated - `True Positive (TP)`, `True Negative (TN)`, `False Positive (FP)`, `False Negative (TP)`
-It's done by comparing the probability of all `P(words|positive)` to `P(words|negative)` in the whole test set.
+It's done by comparing the probability of all `P(words|positive)` to `P(words|negative)` in the whole test set, for each article.
 Then, the accuracy is calculated using the formula
 ```
 (TP + TN) / (TP + TN + FP + FN)
@@ -174,7 +177,47 @@ Then, the accuracy is calculated using the formula
 Last, all positive test sets and negative test sets are counted.
 
 ### Display
+The information displayed for each run:
+* Number of positive articles
+* Number of negative articles
+* Date range
+* List of all outlets included in the process
+* Accuracy
+* Portion of positive articles
+* A graph that shows x-most popular entities
 
+```python
+    print("========")
+    print(f"Finished processing articles:")
+    print(f"Positive: {positive}")
+    print(f"Negative: {negative}")    
+    print(f"DateFrom: {dateFrom}")
+    print(f"DateTo: {dateTo}")
+    print(f"Domains: {domains}")
+    print(f"Accuracy: {displayAccuracy} %")
+    print(f"Portion of positive: {displayPositive} % ")
+    display_graph(f"{_namedEntities} most popular named entities from {dateFrom} to {dateTo}", x_axis, y_axis)
+    print("========")
+```
+### Run the application
+This is how the application is executed to estimate the propostion of articles on COVID-19
+* As proportion of all articles in 2020
+* As proportion of all articles in each month of 2020
+* As proportion of articles from CNN in 2020
+```python
+# Process all articles from 2020
+text_mine_articles(get_domains(), "20200101", "20201231")
+
+# Process all articles for each month in 2020
+each_month("2020")
+
+# Process all artiles in an outlet in 2020
+text_mine_articles(["bbc.com"], "20200101", "20201231")
+```
+
+### Results
+Here are the results from running the application using the code in `Run the application section`
+![Entities_all](https://i.imgur.com/m8JZWp1.png)
 
    [Konrad Krawczyk]: <https://scholar.google.co.uk/citations?user=l-ix1z0AAAAJ&hl=en)>
    [DM882: Text Mining]: <https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&bbcourseid=N340090101-f-F21&lang=en>

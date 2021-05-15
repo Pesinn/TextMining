@@ -214,9 +214,23 @@ each_month("2020")
 # Process all artiles in an outlet in 2020
 text_mine_articles(["bbc.com"], "20200101", "20201231")
 ```
+Only a portion of the whole dataset is used in this project.
+These are the outlets considered:
+* 9news.com.au
+* abc.net.au
+* abcnews.go.com
+* aljazeera.com
+* bbc.com
+* cbc.ca
+* cbsnews.com
+* dailymail.co.uk
+* euronews.com
+* nytimes.com
+* reuters.com
+* washingtontimes.com
 
 ### Results
-Here are the results from running the application using the code in `Run the application section`
+Here are the results from running the application using the code in `Run the application section`. If you have dark background in Github, you won't see the metrics.
 ![Entities_all](https://i.imgur.com/m8JZWp1.png)
 
    [Konrad Krawczyk]: <https://scholar.google.co.uk/citations?user=l-ix1z0AAAAJ&hl=en)>

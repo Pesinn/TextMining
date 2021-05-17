@@ -35,25 +35,45 @@ jupyter notebook
 6. Click `Kernel` in the top bar and choose `Restart & Run All`
 
 ## Project pipelines
-### Fetch data
+### Fetch- and standardize data
 Article data fetched by date and domain from the `release` folder. Title and description are the important things to consider.
-An article object is created:
+
+Here is an example from one of the articles
+```json
+    "title": "More Than 1,000 Current and Former CDC Officers Criticize U.S. Covid-19 Response  - WSJ",
+    "description": "An open letter criticized the nation’s public-health response to the Covid-19 pandemic and called"
+```
+
+An article object is created where both title and description have been combined and standardized using code described in the standardization section below:
 ```json
     {
         "id": "ad5bacf54b7a8ce122ba5fb9077aa1e6",
         "domain": "wsj.com",
-        "title": "More Than 1,000 Current and Former CDC Officers Criticize U.S. Covid-19 Response  - WSJ",
-        "description": "An open letter criticized the nation’s public-health response to the Covid-19 pandemic and called for the federal agency to play a more central role.",
+        "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called']",
+         for the federal agency to play a more central role.",
         "date": "20201017"
     }
 ```
 
-### Standardization
+#### Standardization
 For each article, title and description is concatinated into a single string before standardization processing:
 1. Sentence cleaned with repetitive information from outlets
-    * Some outlets add additional text as postfix of their titles. That text is deleted from the title in the first step. See the list below:
+    * Some outlets add additional text as postfix of their titles, often included after the last "-" or "|" character in a sentence. The purpose of this code is to get rid of that.
     ```python
-    text_to_remove = ["- ABC News", "| Al Jazeera", "| US & Canada News", "- BBC Sport", "- BBC Reel", "- BBC News", "| CBC News", "- Washington Times", "| Reuters", "- The New York Times", "| Euronews", "| Daily Mail", "- CBS News"]
+    # Remove trailing text like "- ABC News" or "| Al Jazeera"
+    def split_and_remove_last_part(text, split):
+    spl = text.split(split)
+    
+    # At least one "split char" is included in text
+    if(len(spl) > 1):
+        spl.pop()
+        
+    return ' '.join(map(str, spl))
+
+    def clean_text(text):
+        text = split_and_remove_last_part(text, " - ")
+        text = split_and_remove_last_part(text, " | ")
+    return text
     ```
 2. Sentence tokenized
     * "I love this project. I hope you also love it" will become: ["I like this project.", "I hope you also like it."]
@@ -232,6 +252,23 @@ These are the outlets considered:
 ### Results
 Here are the results from running the application using the code in `Run the application section`. If you have dark background in Github, you won't see the metrics.
 ![Entities_all](https://i.imgur.com/m8JZWp1.png)
+
+![Entities_all_jan_2020](https://i.imgur.com/YjZtLDD.png)
+![Entities_all_feb_2020](https://i.imgur.com/eJUwbRZ.png)
+![Entities_all_mar_2020](https://i.imgur.com/WQ3FP5y.png)
+![Entities_all_apr_2020](https://i.imgur.com/nscZwbo.png)
+![Entities_all_may_2020](https://i.imgur.com/VuhbcyM.png)
+![Entities_all_jun_2020](https://i.imgur.com/h7oAY4q.png)
+![Entities_all_jul_2020](https://i.imgur.com/8XOvYIO.png)
+![Entities_all_aug_2020](https://i.imgur.com/na8j9MP.png)
+![Entities_all_sep_2020](https://i.imgur.com/tBdzvXW.png)
+![Entities_all_oct_2020](https://i.imgur.com/Mhgb5vS.png)
+![Entities_all_nov_2020](https://i.imgur.com/EadVg16.png)
+
+![Entities_all_pos_2020](https://i.imgur.com/iU0z7WU.png)
+![Entities_bbc_entities_2020](https://i.imgur.com/sRWmYlM.png)
+
+
 
    [Konrad Krawczyk]: <https://scholar.google.co.uk/citations?user=l-ix1z0AAAAJ&hl=en)>
    [DM882: Text Mining]: <https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&bbcourseid=N340090101-f-F21&lang=en>

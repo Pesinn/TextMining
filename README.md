@@ -224,49 +224,128 @@ This is how the application is executed to estimate the propostion of articles o
 * As proportion of all articles in 2020
 * As proportion of all articles in each month of 2020
 * As proportion of articles from CNN in 2020
-```python
-# Process all articles from 2020
-text_mine_articles(get_domains(), "20200101", "20201231")
 
+```python
 # Process all articles for each month in 2020
 each_month("2020")
 
 # Process all artiles in an outlet in 2020
-text_mine_articles(["bbc.com"], "20200101", "20201231")
+process_articles(["bbc.com"], "20200101", "20201231")
 ```
-Only a portion of the whole dataset is used in this project.
+Only the outlets that publishes articles in English are used in this project.
 These are the outlets considered:
-* 9news.com.au
-* abc.net.au
-* abcnews.go.com
-* aljazeera.com
-* bbc.com
-* cbc.ca
-* cbsnews.com
-* dailymail.co.uk
-* euronews.com
-* nytimes.com
-* reuters.com
-* washingtontimes.com
+9news.com.au, morningstaronline.co.uk, abc.net.au, abcnews.go.com, afr.com, aljazeera.com, apnews.com, bbc.com, bostonglobe.com, breitbart.com, businessinsider.com, cbc.ca, cbsnews.com channel4.com,thesun.co.uk, chicagotribune.com, cnbc.com, csmonitor.com, ctvnews.ca, dailymail.co.uk, dailystar.co.uk, dw.com, economist.com, edition.cnn.com, euronews.com, express.co.uk, france24.com, newsweek.com, globalnews.ca, huffpost.com, independent.co.uk, independent.ie, inquirer.com, irishexaminer.com, irishmirror.ie, irishtimes.com, itv.com, latimes.com, liverpoolecho.co.uk, macleans.ca, metro.co.uk, mirror.co.uk, montrealgazette.com, msnbc.com, nbcnews.com, news.com.au, news.sky.com, news.yahoo.com, newshub.co.nz, npr.org, nypost.com, nytimes.com, nzherald.co.nz, politico.com, reuters.com, rnz.co.nz, rt.com, rte.ie, sbs.com.au, scoop.co.nz, scotsman.com, slate.com, smh.com.au, standard.co.uk, stuff.co.nz, telegraph.co.uk, theage.com.au, theatlantic.com, theglobeandmail.com, theguardian.com, thehill.com, thejournal.ie, thestar.com, thesun.ie, thetimes.co.uk, thewest.com.au, time.com, torontosun.com, upi.com,foxnews.com, usatoday.com, vancouversun.com, walesonline.co.uk, washingtonpost.com, washingtontimes.com, westernjournal.com, wnd.com, wsj.com
 
 ### Results
-Here are the results from running the application using the code in `Run the application section`. If you have dark background in Github, you won't see the metrics.
-![Entities_all](https://i.imgur.com/m8JZWp1.png)
+Here are the results from running the application on the English articles. However, there is no data for December 2020. If you have dark background in Github, you won't see the metrics.
 
-![Entities_all_jan_2020](https://i.imgur.com/YjZtLDD.png)
-![Entities_all_feb_2020](https://i.imgur.com/eJUwbRZ.png)
-![Entities_all_mar_2020](https://i.imgur.com/WQ3FP5y.png)
-![Entities_all_apr_2020](https://i.imgur.com/nscZwbo.png)
-![Entities_all_may_2020](https://i.imgur.com/VuhbcyM.png)
-![Entities_all_jun_2020](https://i.imgur.com/h7oAY4q.png)
-![Entities_all_jul_2020](https://i.imgur.com/8XOvYIO.png)
-![Entities_all_aug_2020](https://i.imgur.com/na8j9MP.png)
-![Entities_all_sep_2020](https://i.imgur.com/tBdzvXW.png)
-![Entities_all_oct_2020](https://i.imgur.com/Mhgb5vS.png)
-![Entities_all_nov_2020](https://i.imgur.com/EadVg16.png)
+#### January 2020
+Domains: All
+Positive: 5517
+Negative: 185474
+Accuracy: 99.10 %
+Portion of positive: 2.89 %
+![Entities_all_jan_2020](https://i.imgur.com/1M5ejoW.png)*
 
-![Entities_all_pos_2020](https://i.imgur.com/iU0z7WU.png)
-![Entities_bbc_entities_2020](https://i.imgur.com/sRWmYlM.png)
+#### February 2020
+Domains: All
+Positive: 19490
+Negative: 164756
+Accuracy: 97.36 %
+Portion of positive: 10.58 %
+![Entities_all_feb_2020](https://i.imgur.com/f0AnKWe.png)
+
+#### March 2020
+Domains: All
+Positive: 132157
+Negative: 72225
+Accuracy: 78.56 %
+Portion of positive: 64.66 %
+![Entities_all_mar_2020](https://i.imgur.com/90C1xV8.png)
+
+#### April 2020
+Domains: All
+Positive: 133457
+Negative: 61320
+Accuracy: 76.47 %
+Portion of positive: 68.52 %
+![Entities_all_apr_2020](https://i.imgur.com/xTLrGV1.png)
+
+#### May 2020
+Domains: All
+Positive: 82867
+Negative: 112645
+Accuracy: 85.50 %
+Portion of positive: 42.38 %
+![Entities_all_may_2020](https://i.imgur.com/OADiPom.png)
+
+#### June 2020
+Domains: All
+Positive: 40278
+Negative: 156586
+Accuracy: 92.70 %
+Portion of positive: 20.46 %
+![Entities_all_jun_2020](https://i.imgur.com/qrQKQb1.png)
+
+#### July 2020
+Domains: All
+Positive: 44929
+Negative: 151213
+Accuracy: 92.29 %
+Portion of positive: 22.91 %
+![Entities_all_jul_2020](https://i.imgur.com/1vP2tyu.png)
+
+#### August 2020
+Domains: All
+Positive: 32600
+Negative: 148989
+Accuracy: 93.66 %
+Portion of positive: 17.95 %
+![Entities_all_aug_2020](https://i.imgur.com/suzakPm.png)
+
+#### September 2020
+Domains: All
+Positive: 27700
+Negative: 144673
+Accuracy: 94.07 %
+Portion of positive: 16.07 %
+![Entities_all_sep_2020](https://i.imgur.com/xUxdwl0.png)
+
+#### October 2020
+Domains: All
+Positive: 22387
+Negative: 68384
+Accuracy: 91.85 %
+Portion of positive: 24.66 %
+![Entities_all_oct_2020](https://i.imgur.com/P6oVnli.png)
+
+#### November 2020
+Domains: All
+Positive: 59
+Negative: 451
+Accuracy: 92.75 %
+Portion of positive: 11.57 %
+![Entities_all_nov_2020](https://i.imgur.com/9ZbaTZm.png)
+
+#### December 2020
+No data
+
+#### Whole year 2020
+Domains: All
+Positive: 541441
+Negative: 1266716
+Accuracy: 90.39 %
+Portion of positive: 29.94 %
+![Positives_all_pos_2020](https://i.imgur.com/HA7xyGj.png)
+![Entities_all_pos_2020](https://i.imgur.com/oje3yUA.png)
+
+### Whole year 2020 - BBC
+Domain: bbc.com
+Positive: 5371
+Negative: 12045
+Accuracy: 92.09 %
+Portion of positive: 30.84 %
+![Entities_bbc_entities_2020](https://i.imgur.com/IHqiugL.png)
 
 
 

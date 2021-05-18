@@ -4,15 +4,15 @@ Classifies data from news articles to study the landscape of COVID-19 coverage.
 A project done in the course [DM882: Text Mining], in the University of Southern Denmark ([SDU]), Odense. Techer: [Konrad Krawczyk].
 
 ## Description
-With given news articles from multiple sources as .gz [files], each of the following steps are performed:
+With given news articles from multiple sources as .gz files, each of the following steps are performed:
 
 - Fetch title and description for each article on certain date range
 - Text normalization on title and description for each article
 - COVID-19 classification based on the normalized text
 - Entity recognition to extract all named entities
-- ✨Display results (accuracy and propability) ✨
+- Display results (accuracy and probability)
 
-The data is created by [Konrad Krawczyk].
+The data is created by [Konrad Krawczyk]. More information about it can be found [here].
 
 ## Technical information
 The code is written in [Jupyter notebook] using `Python 3` programming language.
@@ -49,47 +49,49 @@ An article object is created where both title and description have been combined
     {
         "id": "ad5bacf54b7a8ce122ba5fb9077aa1e6",
         "domain": "wsj.com",
-        "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called']",
+        "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19',
+        'Response', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called']",
         "date": "20201017"
     }
 ```
 
-#### Standardization
+### Standardization
 For each article, title and description is concatinated into a single string before standardization processing:
+
 1. Sentence cleaned with repetitive information from outlets
-    * Some outlets add additional text as postfix of their titles, often included after the last "-" or "|" character in a sentence. The purpose of this code is to get rid of that.
+    -  Some outlets add additional text as postfix of their titles, often included after the last "-" or "|" character in a sentence. The purpose of this code is to get rid of that.
     ```python
     # Remove trailing text like "- ABC News" or "| Al Jazeera"
     def split_and_remove_last_part(text, split):
-    spl = text.split(split)
-    
-    # At least one "split char" is included in text
-    if(len(spl) > 1):
-        spl.pop()
+        spl = text.split(split)
         
-    return ' '.join(map(str, spl))
+        # At least one "split char" is included in text
+        if(len(spl) > 1):
+            spl.pop()
+            
+        return ' '.join(map(str, spl))
 
     def clean_text(text):
         text = split_and_remove_last_part(text, " - ")
         text = split_and_remove_last_part(text, " | ")
     return text
     ```
-2. Sentence tokenized
-    * "I love this project. I hope you also love it" will become: ["I like this project.", "I hope you also like it."]
+2. Sentence tokenization
+    - "I like this project. I hope you also like it" will become: ["I like this project.", "I hope you also like it."]
 3. Word tokenization
-    * Tokenize each word in the text. ["I", "like", "this", "project", ".", "I", "hope", "you", "also", "like", "it", "."]
+    - Tokenize each word in the text. ["I", "like", "this", "project", ".", "I", "hope", "you", "also", "like", "it", "."]
 4. Lemmatization
-    * Better -> Good, Rocks -> Rock
+    - Finds the root form of the word: Better -> Good, Rocks -> Rock
 5. Stopwords removed
-    * Stopwords are fetched from the NLTK library and then filtered from the array. English is only considered but you can add more language to the language functions if you want to consider more languages. 
+    - Stopwords are fetched from the NLTK library and then filtered from the array. English is only considered in this case. However, more language can be added to the language function to get stopwords from other languages.
     ```python
     def languages():
-    return [
-        "english"
-    ]
+        return [
+            "english"
+        ]
     ```
 6. Punctuations removed
-    * .?:!,;‘-’| are removed from the array
+    - .?:!,;‘-’| are removed from the tokenized array
 
 NLTK is used for lemmatization (3) and to fetch the stopwords (4). The logic for all other steps (1) (2) (5) is implemented in this project. However, if you set `_useDefault = False`, then NLTK will be used in all steps. This implementation was done to provide the option to compare the final result with- and without NLTK.
 Example:
@@ -104,7 +106,9 @@ def _sentence_tokenize(text):
 Attribute added to the article object:
 ```json
 {
-    "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', '.', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called', 'federal', 'agency', 'play', 'central', 'role']",
+    "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19',
+    'Response', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19',
+    'pandemic', 'called']",
 }
 ```
 Word stemming is not used because it removes the trailing "e" of many words. Therefore, it affects the named entity analysis that is done later on in this project. As an example, the word "Google" becomes "Googl" and "Apple" becomes "Appl".
@@ -112,7 +116,7 @@ Word stemming is not used because it removes the trailing "e" of many words. The
 ### Classification
 
 #### Training- and testing
-Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. Each sets are then split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, ("covid19", "covid-19", "covid", "coronavirus"). Articles that contain any of these words are considered as positive, while all the others are considered as negative.
+Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. Each sets are then split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, ("covid19", "covid-19", "covid", "coronavirus"). Articles that contain any of these words are considered as positive, while all the others are considered as negative. The function `train_test_split` from the sklean library is used for splitting the data.
 
 #### Word frequencies
 Next up is to count how many times each word appears in the testing set. An object is created to keep track of that:
@@ -184,8 +188,10 @@ Here there word Brazil has been combined with `Dam Disaster`, which is not what 
 ### Analysis
 The probability of each word in all articles from the testing set is now being multiplied and put into new object. The probability of each word is kept in the object mentioned above called `word_probability`. 
 ```python
-P(words|positive) = P(positive) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in") * P("article") * P("related") * P("to") * P("covid-19")
-P(words|negative) = P(negative) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in") * P("article") * P("unrelated") * P("to") * P("covid-19")
+P(words|positive) = P(positive) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in")
+* P("article") * P("related") * P("to") * P("covid-19")
+P(words|negative) = P(negative) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in")
+* P("article") * P("unrelated") * P("to") * P("covid-19")
 ```
 Based on this information, predictive values are calculated - `True Positive (TP)`, `True Negative (TN)`, `False Positive (FP)`, `False Negative (TP)`
 It's done by comparing the probability of all `P(words|positive)` to `P(words|negative)` in the whole test set, for each article.
@@ -197,28 +203,16 @@ Last, all positive test sets and negative test sets are counted.
 
 ### Display
 The information displayed for each run:
-* Number of positive articles
-* Number of negative articles
-* Date range
-* List of all outlets included in the process
-* Accuracy
-* Portion of positive articles
-* A graph that shows x-most popular entities
+1. Number of positive articles
+2. Number of negative articles
+3. Number of negative articles
+4. Date range
+5. List of all outlets included in the process
+6. Accuracy
+7. Portion of positive articles
+8. A graph that shows x-most popular entities
 
-```python
-    print("========")
-    print(f"Finished processing articles:")
-    print(f"Positive: {positive}")
-    print(f"Negative: {negative}")    
-    print(f"DateFrom: {dateFrom}")
-    print(f"DateTo: {dateTo}")
-    print(f"Domains: {domains}")
-    print(f"Accuracy: {displayAccuracy} %")
-    print(f"Portion of positive: {displayPositive} % ")
-    display_graph(f"{_namedEntities} most popular named entities from {dateFrom} to {dateTo}", x_axis, y_axis)
-    print("========")
-```
-### Run the application
+## Run the application
 This is how the application is executed to estimate the propostion of articles on COVID-19
 * As proportion of all articles in 2020
 * As proportion of all articles in each month of 2020
@@ -233,12 +227,13 @@ process_articles(["bbc.com"], "20200101", "20201231")
 ```
 Only the outlets that publishes articles in English are used in this project.
 These are the outlets considered:
+
 9news.com.au, morningstaronline.co.uk, abc.net.au, abcnews.go.com, afr.com, aljazeera.com, apnews.com, bbc.com, bostonglobe.com, breitbart.com, businessinsider.com, cbc.ca, cbsnews.com channel4.com,thesun.co.uk, chicagotribune.com, cnbc.com, csmonitor.com, ctvnews.ca, dailymail.co.uk, dailystar.co.uk, dw.com, economist.com, edition.cnn.com, euronews.com, express.co.uk, france24.com, newsweek.com, globalnews.ca, huffpost.com, independent.co.uk, independent.ie, inquirer.com, irishexaminer.com, irishmirror.ie, irishtimes.com, itv.com, latimes.com, liverpoolecho.co.uk, macleans.ca, metro.co.uk, mirror.co.uk, montrealgazette.com, msnbc.com, nbcnews.com, news.com.au, news.sky.com, news.yahoo.com, newshub.co.nz, npr.org, nypost.com, nytimes.com, nzherald.co.nz, politico.com, reuters.com, rnz.co.nz, rt.com, rte.ie, sbs.com.au, scoop.co.nz, scotsman.com, slate.com, smh.com.au, standard.co.uk, stuff.co.nz, telegraph.co.uk, theage.com.au, theatlantic.com, theglobeandmail.com, theguardian.com, thehill.com, thejournal.ie, thestar.com, thesun.ie, thetimes.co.uk, thewest.com.au, time.com, torontosun.com, upi.com,foxnews.com, usatoday.com, vancouversun.com, walesonline.co.uk, washingtonpost.com, washingtontimes.com, westernjournal.com, wnd.com, wsj.com
 
-### Results
+## Results
 Here are the results from running the application on the English articles. However, there is no data for December 2020. If you have dark background in Github, you won't see the metrics.
 
-#### January 2020
+### January 2020
 * Domains: All
 * Positive: 5517
 * Negative: 185474
@@ -246,7 +241,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 2.89 %
 ![Entities_all_jan_2020](https://i.imgur.com/1M5ejoW.png)*
 
-#### February 2020
+### February 2020
 * Domains: All
 * Positive: 19490
 * Negative: 164756
@@ -254,7 +249,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 10.58 %
 ![Entities_all_feb_2020](https://i.imgur.com/f0AnKWe.png)
 
-#### March 2020
+### March 2020
 * Domains: All
 * Positive: 132157
 * Negative: 72225
@@ -262,7 +257,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 64.66 %
 ![Entities_all_mar_2020](https://i.imgur.com/90C1xV8.png)
 
-#### April 2020
+### April 2020
 * Domains: All
 * Positive: 133457
 * Negative: 61320
@@ -270,7 +265,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 68.52 %
 ![Entities_all_apr_2020](https://i.imgur.com/xTLrGV1.png)
 
-#### May 2020
+### May 2020
 * Domains: All
 * Positive: 82867
 * Negative: 112645
@@ -278,7 +273,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 42.38 %
 ![Entities_all_may_2020](https://i.imgur.com/OADiPom.png)
 
-#### June 2020
+### June 2020
 * Domains: All
 * Positive: 40278
 * Negative: 156586
@@ -286,7 +281,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 20.46 %
 ![Entities_all_jun_2020](https://i.imgur.com/qrQKQb1.png)
 
-#### July 2020
+### July 2020
 * Domains: All
 * Positive: 44929
 * Negative: 151213
@@ -294,7 +289,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 22.91 %
 ![Entities_all_jul_2020](https://i.imgur.com/1vP2tyu.png)
 
-#### August 2020
+### August 2020
 * Domains: All
 * Positive: 32600
 * Negative: 148989
@@ -302,7 +297,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 17.95 %
 ![Entities_all_aug_2020](https://i.imgur.com/suzakPm.png)
 
-#### September 2020
+### September 2020
 * Domains: All
 * Positive: 27700
 * Negative: 144673
@@ -310,7 +305,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 16.07 %
 ![Entities_all_sep_2020](https://i.imgur.com/xUxdwl0.png)
 
-#### October 2020
+### October 2020
 * Domains: All
 * Positive: 22387
 * Negative: 68384
@@ -318,7 +313,7 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 24.66 %
 ![Entities_all_oct_2020](https://i.imgur.com/P6oVnli.png)
 
-#### November 2020
+### November 2020
 * Domains: All
 * Positive: 59
 * Negative: 451
@@ -326,10 +321,10 @@ Here are the results from running the application on the English articles. Howev
 * Portion of positive: 11.57 %
 ![Entities_all_nov_2020](https://i.imgur.com/9ZbaTZm.png)
 
-#### December 2020
+### December 2020
 * No data
 
-#### Whole year 2020
+### Whole year 2020
 * Domains: All
 * Positive: 541441
 * Negative: 1266716
@@ -351,7 +346,7 @@ Here are the results from running the application on the English articles. Howev
    [Konrad Krawczyk]: <https://scholar.google.co.uk/citations?user=l-ix1z0AAAAJ&hl=en)>
    [DM882: Text Mining]: <https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&bbcourseid=N340090101-f-F21&lang=en>
    [SDU]: <https://www.sdu.dk/en>
-   [files]: <http://sciride.org/news.html#datacontent>
+   [here]: <http://sciride.org/news.html#datacontent>
    [Jupyter notebook]: <https://jupyter.org/>
    [pip]: <https://pip.pypa.io/en/stable/installing/>
    [Python 3]: <https://www.python.org/downloads/>

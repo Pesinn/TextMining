@@ -50,7 +50,6 @@ An article object is created where both title and description have been combined
         "id": "ad5bacf54b7a8ce122ba5fb9077aa1e6",
         "domain": "wsj.com",
         "standardized": "['More', 'Than', '1,000', 'Current', 'Former', 'CDC', 'Officers', 'Criticize', 'U.S.', 'Covid-19', 'Response', 'An', 'open', 'letter', 'criticized', 'nation', 'public-health', 'response', 'Covid-19', 'pandemic', 'called']",
-         for the federal agency to play a more central role.",
         "date": "20201017"
     }
 ```
@@ -119,8 +118,8 @@ Articles are split into test- and training sets, where the proportion of test is
 Next up is to count how many times each word appears in the testing set. An object is created to keep track of that:
 ```json
 {
-    "positive": {"word-0", frequency},...,{"word-n", frequency},
-    "negative": {"word-0", frequency},...,{"word-n", frequency} 
+    "positive": [{"word-0": "frequency"}, {"word-1": "frequency"}],
+    "negative": [{"word-0": "frequency"}, {"word-1": "frequency"}]
 }
 ```
 
@@ -134,8 +133,8 @@ P(negative) = Negative / All articles
 Also, the probability of each word appearing is calculated and kept in a object: `word_probability`.
 ```json
 {
-    "positive": {"word-0", probability},...,{"word-n", probability},
-    "negative": {"word-0", probability},...,{"word-n", probability} 
+    "positive": [{"word-0": "probability"}, {"word-n": "probability"}],
+    "negative": [{"word-0": "probability"}, {"word-n": "probability"}]
 }
 ```
 
@@ -240,111 +239,111 @@ These are the outlets considered:
 Here are the results from running the application on the English articles. However, there is no data for December 2020. If you have dark background in Github, you won't see the metrics.
 
 #### January 2020
-Domains: All
-Positive: 5517
-Negative: 185474
-Accuracy: 99.10 %
-Portion of positive: 2.89 %
+* Domains: All
+* Positive: 5517
+* Negative: 185474
+* Accuracy: 99.10 %
+* Portion of positive: 2.89 %
 ![Entities_all_jan_2020](https://i.imgur.com/1M5ejoW.png)*
 
 #### February 2020
-Domains: All
-Positive: 19490
-Negative: 164756
-Accuracy: 97.36 %
-Portion of positive: 10.58 %
+* Domains: All
+* Positive: 19490
+* Negative: 164756
+* Accuracy: 97.36 %
+* Portion of positive: 10.58 %
 ![Entities_all_feb_2020](https://i.imgur.com/f0AnKWe.png)
 
 #### March 2020
-Domains: All
-Positive: 132157
-Negative: 72225
-Accuracy: 78.56 %
-Portion of positive: 64.66 %
+* Domains: All
+* Positive: 132157
+* Negative: 72225
+* Accuracy: 78.56 %
+* Portion of positive: 64.66 %
 ![Entities_all_mar_2020](https://i.imgur.com/90C1xV8.png)
 
 #### April 2020
-Domains: All
-Positive: 133457
-Negative: 61320
-Accuracy: 76.47 %
-Portion of positive: 68.52 %
+* Domains: All
+* Positive: 133457
+* Negative: 61320
+* Accuracy: 76.47 %
+* Portion of positive: 68.52 %
 ![Entities_all_apr_2020](https://i.imgur.com/xTLrGV1.png)
 
 #### May 2020
-Domains: All
-Positive: 82867
-Negative: 112645
-Accuracy: 85.50 %
-Portion of positive: 42.38 %
+* Domains: All
+* Positive: 82867
+* Negative: 112645
+* Accuracy: 85.50 %
+* Portion of positive: 42.38 %
 ![Entities_all_may_2020](https://i.imgur.com/OADiPom.png)
 
 #### June 2020
-Domains: All
-Positive: 40278
-Negative: 156586
-Accuracy: 92.70 %
-Portion of positive: 20.46 %
+* Domains: All
+* Positive: 40278
+* Negative: 156586
+* Accuracy: 92.70 %
+* Portion of positive: 20.46 %
 ![Entities_all_jun_2020](https://i.imgur.com/qrQKQb1.png)
 
 #### July 2020
-Domains: All
-Positive: 44929
-Negative: 151213
-Accuracy: 92.29 %
-Portion of positive: 22.91 %
+* Domains: All
+* Positive: 44929
+* Negative: 151213
+* Accuracy: 92.29 %
+* Portion of positive: 22.91 %
 ![Entities_all_jul_2020](https://i.imgur.com/1vP2tyu.png)
 
 #### August 2020
-Domains: All
-Positive: 32600
-Negative: 148989
-Accuracy: 93.66 %
-Portion of positive: 17.95 %
+* Domains: All
+* Positive: 32600
+* Negative: 148989
+* Accuracy: 93.66 %
+* Portion of positive: 17.95 %
 ![Entities_all_aug_2020](https://i.imgur.com/suzakPm.png)
 
 #### September 2020
-Domains: All
-Positive: 27700
-Negative: 144673
-Accuracy: 94.07 %
-Portion of positive: 16.07 %
+* Domains: All
+* Positive: 27700
+* Negative: 144673
+* Accuracy: 94.07 %
+* Portion of positive: 16.07 %
 ![Entities_all_sep_2020](https://i.imgur.com/xUxdwl0.png)
 
 #### October 2020
-Domains: All
-Positive: 22387
-Negative: 68384
-Accuracy: 91.85 %
-Portion of positive: 24.66 %
+* Domains: All
+* Positive: 22387
+* Negative: 68384
+* Accuracy: 91.85 %
+* Portion of positive: 24.66 %
 ![Entities_all_oct_2020](https://i.imgur.com/P6oVnli.png)
 
 #### November 2020
-Domains: All
-Positive: 59
-Negative: 451
-Accuracy: 92.75 %
-Portion of positive: 11.57 %
+* Domains: All
+* Positive: 59
+* Negative: 451
+* Accuracy: 92.75 %
+* Portion of positive: 11.57 %
 ![Entities_all_nov_2020](https://i.imgur.com/9ZbaTZm.png)
 
 #### December 2020
-No data
+* No data
 
 #### Whole year 2020
-Domains: All
-Positive: 541441
-Negative: 1266716
-Accuracy: 90.39 %
-Portion of positive: 29.94 %
+* Domains: All
+* Positive: 541441
+* Negative: 1266716
+* Accuracy: 90.39 %
+* Portion of positive: 29.94 %
 ![Positives_all_pos_2020](https://i.imgur.com/HA7xyGj.png)
 ![Entities_all_pos_2020](https://i.imgur.com/oje3yUA.png)
 
 ### Whole year 2020 - BBC
-Domain: bbc.com
-Positive: 5371
-Negative: 12045
-Accuracy: 92.09 %
-Portion of positive: 30.84 %
+* Domain: bbc.com
+* Positive: 5371
+* Negative: 12045
+* Accuracy: 92.09 %
+* Portion of positive: 30.84 %
 ![Entities_bbc_entities_2020](https://i.imgur.com/IHqiugL.png)
 
 

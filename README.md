@@ -116,7 +116,7 @@ Word stemming is not used because it removes the trailing "e" of many words. The
 ### Classification
 
 #### Training- and testing
-Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. Each sets are then split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, ("covid19", "covid-19", "covid", "coronavirus"). Articles that contain any of these words are considered as positive, while all the others are considered as negative. The function `train_test_split` from the sklean library is used for splitting the data.
+Articles are split into test- and training sets, where the proportion of test is 20 % and training is 80 %. The split is done by using the function `train_test_split` from the library `scikit-learn`. It split the data into random train and test subsets. In next step, each set is split into positive and negative, based on keywords extracted from the articles. In this case the keywords used are related to Covid 19, more precisely `covid19`, `covid-19`, `covid`, `coronavirus`. Articles that contain any of these words are classified as positive, while all the others are classified as negative.
 
 #### Word frequencies
 Next up is to count how many times each word appears in the testing set. An object is created to keep track of that:
@@ -153,7 +153,7 @@ def _named_entities_chunk_NLTK(taggedList):
     return nltk.ne_chunk(taggedList)
 ```
 
-`pos_tag(wordList)`: Each word is tagged as a noun, conjunction, determiner and so on.
+`pos_tag(wordList)`: Each word is tagged (noun, conjunction, determiner and so on).
 `ne_chunk(taggedList)`: Knows if each word is a named entity after being fed by tagged words
 
 Example of the named entity extraction, where `_speech_tag` and `_named_entities_chunk` encapsulate the NLTK functions mentioned before. 
@@ -186,7 +186,7 @@ print(entity_extraction(['Vale', 'Withheld', 'Information', 'From', 'Regulator',
 Here there word Brazil has been combined with `Dam Disaster`, which is not what we want. 
 
 ### Analysis
-The probability of each word in all articles from the testing set is now being multiplied and put into new object. The probability of each word is kept in the object mentioned above called `word_probability`. 
+The probability of each word in all articles from the testing set is now being multiplied and put into new object. Then we get the probability of a sequence of words appearing in a single article. The probability of each word is kept in the object mentioned above called `word_probability`.
 ```python
 P(words|positive) = P(positive) * P("all") * P("tokenized") * P("words") * P("appearing") * P("in")
 * P("article") * P("related") * P("to") * P("covid-19")
